@@ -32,6 +32,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
+  // 从请求头中提取token
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
