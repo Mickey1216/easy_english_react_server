@@ -15,7 +15,7 @@ import { User } from './entities/user.entity';
     // 处理文件上传
     MulterModule.register({
       storage: diskStorage({
-        destination: join(__dirname, '../../public/images'),
+        destination: join(__dirname, '../../public/avatars'),
         filename: (_, file, callback) => {
           const fileName = `${file.originalname}`;
           return callback(null, fileName);

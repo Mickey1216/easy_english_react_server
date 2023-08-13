@@ -7,10 +7,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   // 处理跨域
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+
   await app.listen(3005);
 }
 bootstrap();

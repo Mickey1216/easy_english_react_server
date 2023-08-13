@@ -66,4 +66,9 @@ export class UserService {
   async findOneByUserName(userName: string): Promise<User | undefined> {
     return await this.userRepository.findOne({ where: { userName } });
   }
+
+  // 头像上传
+  async uploadAvatar(file: Express.Multer.File) {
+    return `http://localhost:3005/public/avatars/${file.originalname}`
+  }
 }

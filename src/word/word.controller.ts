@@ -3,13 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
 
 @Controller('word')
 export class WordController {
@@ -24,7 +23,7 @@ export class WordController {
   // 获取用户所有的单词
   @Post('getWordsList')
   getAll(@Body() body: any) {
-    return this.wordService.getAll(body.belonging);
+    return this.wordService.getAll(body);
   }
 
   // 获取单词的总个数
@@ -33,15 +32,27 @@ export class WordController {
     return this.wordService.getWordsCount(body.belonging);
   }
 
-  // 获取复习单词的总个数
-  @Post('getReviewWordsCount')
-  getReviewWordsCount(@Body() body: any) {
-    return this.wordService.getReviewWordsCount(body);
-  }
-
   // 获取复习单词
   @Post('getReviewWords')
   getReviewWords(@Body() body: any) {
     return this.wordService.getReviewWords(body);
+  }
+
+  // 批量删除单词
+  @Post('deleteWords')
+  deleteWords(@Body() body: any) {
+    return this.wordService.deleteWords(body);
+  }
+
+  // 删除单词
+  @Delete('deleteWord/:id')
+  deleteWord(@Param('id') id: string) {
+    return this.wordService.deleteWord(id);
+  }
+
+  // 更新单词
+  @Put('updateWord/:id')
+  update(@Param('id') id: string, @Body() body) {
+    return this.wordService.updateWord(id, body);
   }
 }

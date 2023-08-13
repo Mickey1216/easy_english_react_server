@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteQueryBuilder } from 'typeorm';
 import { Word } from './entities/word.entity';
 import { CreateWordDto } from './dto/create-word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
 
 @Injectable()
 export class WordService {
@@ -17,8 +16,18 @@ export class WordService {
   }
 
   // 获取用户所有的单词
-  async getAll(belonging: string) {
-    const wordsList = await this.wordRepository.find({ where: { belonging } });
+  async getAll(body) {
+    const { belonging, pagination } = body;
+    let { current, pageSize } = pagination;
+    current = parseInt(current);
+    pageSize = parseInt(pageSize);
+    const skip = (current - 1) * pageSize;
+
+    const wordsList = await this.wordRepository.find({
+      where: { belonging },
+      skip,
+      take: pageSize,
+    });
     return {
       code: 200,
       message: '获取成功',
@@ -29,7 +38,7 @@ export class WordService {
   // 获取单词的总个数
   async getWordsCount(belonging: string) {
     const wordsCount = await this.wordRepository.countBy({
-      belonging,
+      belonging
     });
     return {
       code: 200,
@@ -37,30 +46,7 @@ export class WordService {
       data: wordsCount,
     };
   }
-
-  // 获取复习单词的总个数
-  async getReviewWordsCount(body: any) {
-    const { belonging, type } = body;
-    let reviewWordsCount = 0;
-    // 如果没有选择单词类型或者选择了两个单词类型，则获取所有类型的单词
-    if (type.length === 0 || type.length === 2) {
-      reviewWordsCount = await this.wordRepository.countBy({
-        belonging,
-      });
-    } else {
-      // 根据选择的单词类型获取单词
-      reviewWordsCount = await this.wordRepository.countBy({
-        belonging,
-        mark: parseInt(type[0]),
-      });
-    }
-    return {
-      code: 200,
-      message: '获取成功',
-      data: reviewWordsCount,
-    };
-  }
-
+  
   // 获取复习单词
   async getReviewWords(body: any) {
     const { belonging, type, count, order } = body;
@@ -90,5 +76,58 @@ export class WordService {
       message: '获取成功',
       data: reviewWords,
     };
+  }
+
+  // 批量删除单词
+  async deleteWords(body: any) {
+    const { ids } = body;
+    let deleteResult = null;
+    if (ids.length > 0) deleteResult = await this.wordRepository.delete(ids);
+
+    if (deleteResult.affected > 0)
+      return {
+        code: 200,
+        message: '删除成功',
+        data: deleteResult,
+      };
+    else
+      return {
+        code: 400,
+        message: '删除失败',
+      };
+  }
+
+  // 删除单词
+  async deleteWord(id: string) {
+    const deleteResult = await this.wordRepository.delete(id);
+    
+    if (deleteResult.affected > 0)
+      return {
+        code: 200,
+        message: '删除成功',
+        data: deleteResult,
+      };
+    else
+      return {
+        code: 400,
+        message: '删除失败',
+      };
+  }
+
+  // 更新单词
+  async updateWord(id: string, updateWordDto) {
+    const updateResult = await this.wordRepository.update(id, updateWordDto);
+
+    if (updateResult.affected > 0)
+      return {
+        code: 200,
+        message: '更新成功',
+        data: updateResult,
+      };
+    else
+      return {
+        code: 400,
+        message: '更新失败',
+      };
   }
 }
