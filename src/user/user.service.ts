@@ -69,6 +69,6 @@ export class UserService {
 
   // 头像上传
   async uploadAvatar(file: Express.Multer.File) {
-    return `http://localhost:3005/public/avatars/${file.originalname}`
+    return `http://localhost:3005/public/avatars/${file.originalname}`;
   }
 }

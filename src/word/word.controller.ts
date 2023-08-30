@@ -17,6 +17,8 @@ export class WordController {
   // 添加单词
   @Post('addWord')
   create(@Body() createWordDto: CreateWordDto) {
+    console.log(createWordDto);
+    
     return this.wordService.create(createWordDto);
   }
 
