@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
 
@@ -17,8 +9,6 @@ export class WordController {
   // 添加单词
   @Post('addWord')
   create(@Body() createWordDto: CreateWordDto) {
-    console.log(createWordDto);
-    
     return this.wordService.create(createWordDto);
   }
 

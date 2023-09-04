@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Word } from './entities/word.entity';
 import { CreateWordDto } from './dto/create-word.dto';
 
@@ -38,7 +38,7 @@ export class WordService {
   // 获取单词的总个数
   async getWordsCount(belonging: string) {
     const wordsCount = await this.wordRepository.countBy({
-      belonging
+      belonging,
     });
     return {
       code: 200,
@@ -46,11 +46,12 @@ export class WordService {
       data: wordsCount,
     };
   }
-  
+
   // 获取复习单词
   async getReviewWords(body: any) {
     const { belonging, type, count, order } = body;
     let reviewWords = [];
+
     // 顺序获取单词
     if (type.length === 0 || type.length === 2) {
       // 如果没有选择单词类型或者选择了两个单词类型，则获取所有类型的单词
@@ -100,7 +101,7 @@ export class WordService {
   // 删除单词
   async deleteWord(id: string) {
     const deleteResult = await this.wordRepository.delete(id);
-    
+
     if (deleteResult.affected > 0)
       return {
         code: 200,
